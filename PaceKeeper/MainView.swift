@@ -94,6 +94,7 @@ struct MainView: View {
     func makeMainButtons() -> some View {
         switch currentState {
         case .BeforeProcess:
+            // 측정 시작하기
             return AnyView(
                 Button(action:{
                     currentState = .Processing
@@ -102,6 +103,7 @@ struct MainView: View {
                 }
             )
         case .Processing:
+            // 측정 종료하기
             return AnyView(
                 Button(action:{
                     currentState = .AfterProcess
@@ -110,6 +112,7 @@ struct MainView: View {
                 }
             )
         case .AfterProcess:
+            // 재시작하거나 결과 보기
             return AnyView(
                 HStack{
                     Button(action:{
