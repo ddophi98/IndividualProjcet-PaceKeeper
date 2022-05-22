@@ -14,6 +14,7 @@
 		BC50B1D9283388C9002E969E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC50B1D8283388C9002E969E /* MainView.swift */; };
 		BC50B1DB283388D8002E969E /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC50B1DA283388D8002E969E /* ResultView.swift */; };
 		BC50B1DD2834D695002E969E /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC50B1DC2834D695002E969E /* ColorExtension.swift */; };
+		BC50B1E328370F63002E969E /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = BC50B1E228370F63002E969E /* PopupView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC50B1E328370F63002E969E /* PopupView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +94,9 @@
 			dependencies = (
 			);
 			name = PaceKeeper;
+			packageProductDependencies = (
+				BC50B1E228370F63002E969E /* PopupView */,
+			);
 			productName = PaceKeeper;
 			productReference = BC50B1C7283387B2002E969E /* PaceKeeper.app */;
 			productType = "com.apple.product-type.application";
@@ -120,6 +125,9 @@
 				Base,
 			);
 			mainGroup = BC50B1BE283387B1002E969E;
+			packageReferences = (
+				BC50B1E128370F63002E969E /* XCRemoteSwiftPackageReference "PopupView" */,
+			);
 			productRefGroup = BC50B1C8283387B2002E969E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -351,6 +359,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BC50B1E128370F63002E969E /* XCRemoteSwiftPackageReference "PopupView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/exyte/PopupView.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BC50B1E228370F63002E969E /* PopupView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC50B1E128370F63002E969E /* XCRemoteSwiftPackageReference "PopupView" */;
+			productName = PopupView;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BC50B1BF283387B1002E969E /* Project object */;
 }

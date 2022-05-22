@@ -6,9 +6,30 @@
 //
 
 import SwiftUI
+import PopupView
 
 enum NotiMethod{
     case Sound, Vibration
+}
+
+enum SelectedNoti{
+    case Lower, Higher
+    var sound: Int {
+        switch self {
+        case .Lower:
+            return 1
+        case .Higher:
+            return 2
+        }
+    }
+    var vibration: Int {
+        switch self {
+        case .Lower:
+            return 1
+        case .Higher:
+            return 2
+        }
+    }
 }
 
 enum CurrentState{
@@ -23,6 +44,7 @@ struct MainView: View {
     @State var processedTime: Int
     @State var movedDistance: Float
     @State var consumedCalorie: Float
+    @State var showHelpPopup: Bool
     var speeds = [Float]()
     
     init(){
@@ -33,6 +55,7 @@ struct MainView: View {
         processedTime = 0
         movedDistance = 0.0
         consumedCalorie = 0.0
+        showHelpPopup = false
         for speed in stride(from: 0, through: 20, by: 0.5) {
             speeds.append(Float(speed))
         }
@@ -40,48 +63,87 @@ struct MainView: View {
     
     var body: some View {
         NavigationView{
-            VStack(spacing: 40){
-                // 제한 속도 선택 또는 보여주기
-                VStack{
-                    Text("제한 속도")
-                        .font(.system(size: 30, weight: Font.Weight.bold))
-                        .foregroundColor(Color(hex: "03045E"))
-                    makeLimitSpeedView()
-                }
-                // 알림 방식 선택하기
-                VStack{
-                    Text("알림 방식")
-                        .font(.system(size: 30, weight: Font.Weight.bold))
-                        .foregroundColor(Color(hex: "03045E"))
-                    Picker("Notice Method", selection: $selectedNotiMethod) {
-                        Text("소리").tag(NotiMethod.Sound)
-                        Text("진동").tag(NotiMethod.Vibration)
+            ZStack{
+                VStack(spacing: 40){
+                    // 제한 속도 선택 또는 보여주기
+                    VStack{
+                        Text("제한 속도")
+                            .font(.system(size: 30, weight: Font.Weight.bold))
+                            .foregroundColor(Color(hex: "03045E"))
+                        makeLimitSpeedView()
                     }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .frame(width: 240)
+                    // 알림 방식 선택하기
+                    VStack{
+                        Text("알림 방식")
+                            .font(.system(size: 30, weight: Font.Weight.bold))
+                            .foregroundColor(Color(hex: "03045E"))
+                        Picker("Notice Method", selection: $selectedNotiMethod) {
+                            Text("소리").tag(NotiMethod.Sound)
+                            Text("진동").tag(NotiMethod.Vibration)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 240)
+                    }
+                    // 실시간 정보 보여주기
+                    LazyVGrid(columns: [GridItem(.flexible(maximum: 120)), GridItem(.flexible(maximum: 120))]){
+                        makeRealTimeInfoView(title: "현재 속도", content: "\(currentSpeed)")
+                        makeRealTimeInfoView(title: "시간", content: "\(processedTime)")
+                        makeRealTimeInfoView(title: "이동 거리", content: "\(movedDistance)")
+                        makeRealTimeInfoView(title: "칼로리", content: "\(consumedCalorie)")
+                    }.padding(20)
+                    // 측정 시작 또는 중지 또는 결과보기
+                    makeMainButtons()
+                    Spacer()
                 }
-                // 실시간 정보 보여주기
-                LazyVGrid(columns: [GridItem(.flexible(maximum: 120)), GridItem(.flexible(maximum: 120))]){
-                    makeRealTimeInfoView(title: "현재 속도", content: "\(currentSpeed)")
-                    makeRealTimeInfoView(title: "시간", content: "\(processedTime)")
-                    makeRealTimeInfoView(title: "이동 거리", content: "\(movedDistance)")
-                    makeRealTimeInfoView(title: "칼로리", content: "\(consumedCalorie)")
-                }.padding(20)
-                // 측정 시작 또는 중지 또는 결과보기
-                makeMainButtons()
-                Spacer()
+                .disabled(showHelpPopup ? true : false)
+                Color.black
+                    .edgesIgnoringSafeArea(.all)
+                    .opacity(showHelpPopup ? 0.3 : 0)
             }
             .toolbar{
                 if currentState == .BeforeProcess || currentState == .AfterProcess {
-                    // 앱의 간단한 설명 보여주기
+                    // 앱의 간단한 설명 팝업 창으로 보여주기
                     Button(action:{
-                        
+                        withAnimation{
+                            showHelpPopup = true
+                        }
                     }){
                         Image(systemName: "questionmark.circle.fill")
                             .foregroundColor(Color(hex: "03045E"))
                             .font(.system(size: 20))
                     }
                 }
+            }
+            .popup(isPresented: $showHelpPopup, closeOnTap: false){
+                // 팝업 창
+                VStack(spacing: 30){
+                    VStack{
+                        Text("현재 속도가 제한 속도보다 높아지면 해당 알림으로 알려줍니다.")
+                        makeNotifyExampleView(selectedNoti: .Higher)
+                    }
+                    .padding([.horizontal, .top])
+                    VStack{
+                        Text("현재 속도가 제한 속도보다 낮아지면 해당 알림으로 알려줍니다.")
+                        makeNotifyExampleView(selectedNoti: .Lower)
+                    }
+                    .padding(.horizontal)
+                    Button(action:{
+                        withAnimation{
+                            showHelpPopup = false
+                        }
+                    }){
+                        Text("확인")
+                            .font(.system(size: 20, weight: Font.Weight.bold))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .overlay(Rectangle().frame(height: 0.2, alignment: .top).foregroundColor(Color.gray), alignment: .top)
+                            .foregroundColor(Color.blue)
+                    }
+                    
+                }
+                .frame(width: 300, height: 350, alignment: .bottom)
+                .background(Color.white)
+                .cornerRadius(30.0)
             }
         }
     }
@@ -202,6 +264,35 @@ struct MainView: View {
                     }
                 }
             )
+        }
+    }
+    // 알림 타입의 예시를 들을 수 있게 해주는 뷰 만들기
+    func makeNotifyExampleView(selectedNoti: SelectedNoti) -> some View {
+        return HStack(spacing: 20){
+            Button(action:{
+                
+            }){
+                Text("소리")
+                    .font(.system(size: 17, weight: Font.Weight.bold))
+                    .frame(width: 60, height: 10)
+                    .padding()
+                    .background(Color(hex: "C9F0F8"))
+                    .foregroundColor(Color(hex: "000000"))
+                    .cornerRadius(20)
+            }
+            Text("또는")
+                .font(.system(size: 17, weight: Font.Weight.bold))
+            Button(action:{
+                
+            }){
+                Text("진동")
+                    .font(.system(size: 17, weight: Font.Weight.bold))
+                    .frame(width: 60, height: 10)
+                    .padding()
+                    .background(Color(hex: "0277B6"))
+                    .foregroundColor(Color(hex: "FFFFFF"))
+                    .cornerRadius(20)
+            }
         }
     }
 }
