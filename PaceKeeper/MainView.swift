@@ -12,24 +12,8 @@ enum NotiMethod{
     case Sound, Vibration
 }
 
-enum SelectedNoti{
+enum ComparedState{
     case Lower, Higher
-    var sound: Int {
-        switch self {
-        case .Lower:
-            return 1
-        case .Higher:
-            return 2
-        }
-    }
-    var vibration: Int {
-        switch self {
-        case .Lower:
-            return 1
-        case .Higher:
-            return 2
-        }
-    }
 }
 
 enum CurrentState{
@@ -59,6 +43,7 @@ struct MainView: View {
         for speed in stride(from: 0, through: 20, by: 0.5) {
             speeds.append(Float(speed))
         }
+        HapticManager.instance.prepareHaptics()
     }
     
     var body: some View {
@@ -119,12 +104,12 @@ struct MainView: View {
                 VStack(spacing: 30){
                     VStack{
                         Text("현재 속도가 제한 속도보다 높아지면 해당 알림으로 알려줍니다.")
-                        makeNotifyExampleView(selectedNoti: .Higher)
+                        makeNotifyExampleView(state: .Higher)
                     }
                     .padding([.horizontal, .top])
                     VStack{
                         Text("현재 속도가 제한 속도보다 낮아지면 해당 알림으로 알려줍니다.")
-                        makeNotifyExampleView(selectedNoti: .Lower)
+                        makeNotifyExampleView(state: .Lower)
                     }
                     .padding(.horizontal)
                     Button(action:{
@@ -267,10 +252,15 @@ struct MainView: View {
         }
     }
     // 알림 타입의 예시를 들을 수 있게 해주는 뷰 만들기
-    func makeNotifyExampleView(selectedNoti: SelectedNoti) -> some View {
+    func makeNotifyExampleView(state: ComparedState) -> some View {
         return HStack(spacing: 20){
             Button(action:{
-                
+                switch state {
+                case .Lower:
+                    notify(type: .Sound, state: .Lower)
+                case .Higher:
+                    notify(type: .Sound, state: .Higher)
+                }
             }){
                 Text("소리")
                     .font(.system(size: 17, weight: Font.Weight.bold))
@@ -283,7 +273,12 @@ struct MainView: View {
             Text("또는")
                 .font(.system(size: 17, weight: Font.Weight.bold))
             Button(action:{
-                
+                switch state {
+                case .Lower:
+                    notify(type: .Vibration, state: .Lower)
+                case .Higher:
+                    notify(type: .Vibration, state: .Higher)
+                }
             }){
                 Text("진동")
                     .font(.system(size: 17, weight: Font.Weight.bold))
@@ -292,6 +287,26 @@ struct MainView: View {
                     .background(Color(hex: "0277B6"))
                     .foregroundColor(Color(hex: "FFFFFF"))
                     .cornerRadius(20)
+            }
+        }
+    }
+    
+    // 알림음 또는 진동 들려주기
+    func notify(type: NotiMethod, state: ComparedState){
+        switch type {
+        case .Sound:
+            switch state {
+            case .Lower:
+                print("lower sound")
+            case .Higher:
+                print("higher sound")
+            }
+        case .Vibration:
+            switch state {
+            case .Lower:
+                HapticManager.instance.vibrate(.Lower)
+            case .Higher:
+                HapticManager.instance.vibrate(.Higher)
             }
         }
     }

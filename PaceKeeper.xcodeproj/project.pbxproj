@@ -15,6 +15,7 @@
 		BC50B1DB283388D8002E969E /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC50B1DA283388D8002E969E /* ResultView.swift */; };
 		BC50B1DD2834D695002E969E /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC50B1DC2834D695002E969E /* ColorExtension.swift */; };
 		BC50B1E328370F63002E969E /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = BC50B1E228370F63002E969E /* PopupView */; };
+		BC9E3FF0283AFB4900AC5E77 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E3FEF283AFB4800AC5E77 /* HapticManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		BC50B1D8283388C9002E969E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		BC50B1DA283388D8002E969E /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		BC50B1DC2834D695002E969E /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
+		BC9E3FEF283AFB4800AC5E77 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				BC50B1CC283387B2002E969E /* ContentView.swift */,
 				BC50B1D8283388C9002E969E /* MainView.swift */,
 				BC50B1DA283388D8002E969E /* ResultView.swift */,
+				BC9E3FEF283AFB4800AC5E77 /* HapticManager.swift */,
 				BC50B1DC2834D695002E969E /* ColorExtension.swift */,
 				BC50B1CE283387B6002E969E /* Assets.xcassets */,
 				BC50B1D0283387B6002E969E /* Preview Content */,
@@ -158,6 +161,7 @@
 				BC50B1DB283388D8002E969E /* ResultView.swift in Sources */,
 				BC50B1D9283388C9002E969E /* MainView.swift in Sources */,
 				BC50B1CB283387B2002E969E /* PaceKeeperApp.swift in Sources */,
+				BC9E3FF0283AFB4900AC5E77 /* HapticManager.swift in Sources */,
 				BC50B1DD2834D695002E969E /* ColorExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
