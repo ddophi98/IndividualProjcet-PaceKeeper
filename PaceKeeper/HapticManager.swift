@@ -21,7 +21,7 @@ class HapticManager {
             engine = try CHHapticEngine()
             try engine?.start()
         } catch {
-            print("There was an error creating the engine: \(error.localizedDescription)")
+            print("Haptic Engine을 만들 때 오류가 발생했습니다. \(error.localizedDescription)")
         }
     }
     

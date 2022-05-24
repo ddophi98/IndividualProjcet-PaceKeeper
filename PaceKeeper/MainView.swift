@@ -297,9 +297,9 @@ struct MainView: View {
         case .Sound:
             switch state {
             case .Lower:
-                print("lower sound")
+                SoundManager.instance.playSound(.Lower)
             case .Higher:
-                print("higher sound")
+                SoundManager.instance.playSound(.Higher)
             }
         case .Vibration:
             switch state {
