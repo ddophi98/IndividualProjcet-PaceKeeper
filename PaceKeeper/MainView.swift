@@ -17,28 +17,22 @@ enum ComparedState{
 }
 
 enum CurrentState{
-    case BeforeProcess, Processing, AfterProcess
+    case BeforeStart, Processing, Stop, End
 }
 
 struct MainView: View {
     @State var selectedSpeedIdx: Int
     @State var selectedNotiMethod: NotiMethod
     @State var currentState: CurrentState
-    @State var currentSpeed: Float
-    @State var processedTime: Int
-    @State var movedDistance: Float
-    @State var consumedCalorie: Float
     @State var showHelpPopup: Bool
+    @ObservedObject var timerProcess: TimerProcess
     var speeds = [Float]()
     
     init(){
         selectedSpeedIdx = 0
         selectedNotiMethod = NotiMethod.Sound
-        currentState = CurrentState.BeforeProcess
-        currentSpeed = 0.0
-        processedTime = 0
-        movedDistance = 0.0
-        consumedCalorie = 0.0
+        currentState = CurrentState.BeforeStart
+        timerProcess = TimerProcess()
         showHelpPopup = false
         for speed in stride(from: 0, through: 20, by: 0.5) {
             speeds.append(Float(speed))
@@ -71,10 +65,10 @@ struct MainView: View {
                     }
                     // 실시간 정보 보여주기
                     LazyVGrid(columns: [GridItem(.flexible(maximum: 120)), GridItem(.flexible(maximum: 120))]){
-                        makeRealTimeInfoView(title: "현재 속도", content: "\(currentSpeed)")
-                        makeRealTimeInfoView(title: "시간", content: "\(processedTime)")
-                        makeRealTimeInfoView(title: "이동 거리", content: "\(movedDistance)")
-                        makeRealTimeInfoView(title: "칼로리", content: "\(consumedCalorie)")
+                        makeRealTimeInfoView(title: "현재 속도", content: "\(timerProcess.data.currentSpeed)")
+                        makeRealTimeInfoView(title: "시간", content: "\(timerProcess.data.processedTime)")
+                        makeRealTimeInfoView(title: "이동 거리", content: "\(timerProcess.data.movedDistance)")
+                        makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)")
                     }.padding(20)
                     // 측정 시작 또는 중지 또는 결과보기
                     makeMainButtons()
@@ -86,7 +80,7 @@ struct MainView: View {
                     .opacity(showHelpPopup ? 0.3 : 0)
             }
             .toolbar{
-                if currentState == .BeforeProcess || currentState == .AfterProcess {
+                if currentState != .Processing {
                     // 앱의 간단한 설명 팝업 창으로 보여주기
                     Button(action:{
                         withAnimation{
@@ -136,7 +130,7 @@ struct MainView: View {
     // 제한 속도 뷰를 상황에 따라 다르게 만들기
     func makeLimitSpeedView() -> some View {
         switch currentState {
-        case .BeforeProcess, .AfterProcess:
+        case .BeforeStart, .End:
             // 제한 속도 선택할 수 있게 하기
             return AnyView(
                 HStack{
@@ -155,7 +149,7 @@ struct MainView: View {
                         .font(.system(size: 15, weight: Font.Weight.bold))
                 }.frame(height: 180)
             )
-        case .Processing:
+        case .Processing, .Stop:
             // 선택된 제한 속도 보여주기
             return AnyView(
                 HStack{
@@ -191,10 +185,12 @@ struct MainView: View {
     // 메인 버튼을 상황에 따라 다르게 만들기
     func makeMainButtons() -> some View {
         switch currentState {
-        case .BeforeProcess:
+        case .BeforeStart:
             // 측정 시작하기
             return AnyView(
                 Button(action:{
+                    timerProcess.initData()
+                    timerProcess.startProcess()
                     currentState = .Processing
                 }){
                     Text("측정 시작")
@@ -207,25 +203,71 @@ struct MainView: View {
                 }
             )
         case .Processing:
-            // 측정 종료하기
+            // 측정 종료 또는 일시 정지하기
             return AnyView(
-                Button(action:{
-                    currentState = .AfterProcess
-                }){
-                    Text("종료")
-                        .font(.system(size: 25, weight: Font.Weight.bold))
-                        .frame(width: 120)
-                        .padding()
-                        .background(Color(hex: "FF5C5C"))
-                        .foregroundColor(Color(hex: "FFFFFF"))
-                        .cornerRadius(20)
+                HStack(spacing:25){
+                    Button(action:{
+                        timerProcess.stopProcess()
+                        currentState = .End
+                    }){
+                        Text("종료")
+                            .font(.system(size: 25, weight: Font.Weight.bold))
+                            .frame(width: 120)
+                            .padding()
+                            .background(Color(hex: "EEEEEF"))
+                            .foregroundColor(Color(hex: "000000"))
+                            .cornerRadius(20)
+                    }
+                    Button(action:{
+                        timerProcess.stopProcess()
+                        currentState = .Stop
+                    }){
+                        Text("일시 정지")
+                            .font(.system(size: 25, weight: Font.Weight.bold))
+                            .frame(width: 120)
+                            .padding()
+                            .background(Color(hex: "FF5C5C"))
+                            .foregroundColor(Color(hex: "FFFFFF"))
+                            .cornerRadius(20)
+                    }
                 }
             )
-        case .AfterProcess:
+        case .Stop:
+            // 측정 종료 또는 계속하기
+            return AnyView(
+                HStack(spacing:25){
+                    Button(action:{
+                        currentState = .End
+                    }){
+                        Text("종료")
+                            .font(.system(size: 25, weight: Font.Weight.bold))
+                            .frame(width: 120)
+                            .padding()
+                            .background(Color(hex: "EEEEEF"))
+                            .foregroundColor(Color(hex: "000000"))
+                            .cornerRadius(20)
+                    }
+                    Button(action:{
+                        timerProcess.startProcess()
+                        currentState = .Processing
+                    }){
+                        Text("계속")
+                            .font(.system(size: 25, weight: Font.Weight.bold))
+                            .frame(width: 120)
+                            .padding()
+                            .background(Color(hex: "90E0EF"))
+                            .foregroundColor(Color(hex: "03045E"))
+                            .cornerRadius(20)
+                    }
+                }
+            )
+        case .End:
             // 재시작하거나 결과 보기
             return AnyView(
                 HStack(spacing:25){
                     Button(action:{
+                        timerProcess.initData()
+                        timerProcess.startProcess()
                         currentState = .Processing
                     }){
                         Text("재시작")
@@ -317,3 +359,4 @@ struct MainView_Previews: PreviewProvider {
         MainView()
     }
 }
+

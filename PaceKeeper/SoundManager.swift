@@ -11,7 +11,7 @@ import AVKit
  
 class SoundManager {
     static let instance = SoundManager()
-    var player: AVAudioPlayer?
+    private var player: AVAudioPlayer?
     
     func playSound(_ state: ComparedState) {
         let soundName: String
