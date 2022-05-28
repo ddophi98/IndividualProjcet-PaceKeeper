@@ -38,6 +38,7 @@ struct MainView: View {
             speeds.append(Float(speed))
         }
         HapticManager.instance.prepareHaptics()
+        timerProcess.setLocationManager()
     }
     
     var body: some View {

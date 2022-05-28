@@ -29,5 +29,4 @@ class SoundManager {
              print("재생하는데 오류가 발생했습니다. \(error.localizedDescription)")
         }
     }
-
 }
