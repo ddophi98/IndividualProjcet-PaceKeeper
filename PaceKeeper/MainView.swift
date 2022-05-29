@@ -66,9 +66,9 @@ struct MainView: View {
                     }
                     // 실시간 정보 보여주기
                     LazyVGrid(columns: [GridItem(.flexible(maximum: 120)), GridItem(.flexible(maximum: 120))]){
-                        makeRealTimeInfoView(title: "현재 속도", content: "\(timerProcess.data.currentSpeed)")
+                        makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed))
                         makeRealTimeInfoView(title: "시간", content: "\(timerProcess.data.processedTime)")
-                        makeRealTimeInfoView(title: "이동 거리", content: "\(timerProcess.data.movedDistance)")
+                        makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance))
                         makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)")
                     }.padding(20)
                     // 측정 시작 또는 중지 또는 결과보기

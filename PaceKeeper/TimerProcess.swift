@@ -14,6 +14,7 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     private var timer = Timer()
     private var latitude: Double?
     private var longitude: Double?
+    private let updatingTime = 1.0
     
     // 데이터 초기화하기
     func initData(){
@@ -22,8 +23,8 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     
     // 프로세스 시작하기
     func startProcess(){
-        // 초단위로 반복되는 작업
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true){ timer in
+        // 일정시간 단위로 반복되는 작업
+        timer = Timer.scheduledTimer(withTimeInterval: updatingTime, repeats: true){ timer in
             // 시간 증가시키기
             self.data.processedTime += 1
             // 현재 위치 업데이트 하기
@@ -35,15 +36,20 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
                 return
             }
             
-            // 좌표 추가 및 움직인 거리 업데이트 하기
+            // 좌표 추가하기
             if self.data.coordinates.count == 0{
                 self.data.coordinates.append(CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
             }else{
                 let lastCoordinate = self.data.coordinates[self.data.coordinates.endIndex-1]
+                // 움직인 거리 및 속도 업데이트하기
                 if lastCoordinate.latitude != latitude || lastCoordinate.longitude != longitude{
                     let currentCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                    let currentMovedDistance = Float(self.getDistance(from: lastCoordinate, to: currentCoordinate))/1000
                     self.data.coordinates.append(currentCoordinate)
-                    self.data.movedDistance += (Float(self.getDistance(from: lastCoordinate, to: currentCoordinate))/1000)
+                    self.data.movedDistance += currentMovedDistance
+                    self.data.currentSpeed = currentMovedDistance / (Float(self.updatingTime) / 3600)
+                }else{
+                    self.data.currentSpeed = 0.0
                 }
             }
             
