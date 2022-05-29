@@ -10,12 +10,10 @@ import CoreLocation
 
 class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegate {
     @Published var data: Data = Data()
-    @Published var location: CLLocationCoordinate2D?
-    private var timer = Timer()
     private let locationManager = CLLocationManager()
-    //위도와 경도
-    var latitude: Double?
-    var longitude: Double?
+    private var timer = Timer()
+    private var latitude: Double?
+    private var longitude: Double?
     
     // 데이터 초기화하기
     func initData(){
@@ -36,7 +34,20 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
                 print("위치 정보 못받아옴")
                 return
             }
-            print("내 위치: \(latitude), \(longitude)")
+            
+            // 좌표 추가 및 움직인 거리 업데이트 하기
+            if self.data.coordinates.count == 0{
+                self.data.coordinates.append(CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+            }else{
+                let lastCoordinate = self.data.coordinates[self.data.coordinates.endIndex-1]
+                if lastCoordinate.latitude != latitude || lastCoordinate.longitude != longitude{
+                    let currentCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                    self.data.coordinates.append(currentCoordinate)
+                    self.data.movedDistance += (Float(self.getDistance(from: lastCoordinate, to: currentCoordinate))/1000)
+                }
+            }
+            
+            
         }
     }
     
@@ -58,11 +69,19 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
         locationManager.startUpdatingLocation()
     }
     
-    //위도 경도 가져오기
+    // 위도 경도 업데이트하기
     func updateLocation(){
         latitude = locationManager.location?.coordinate.latitude
         longitude = locationManager.location?.coordinate.longitude
     }
+    
+    // 두 좌표간의 거리 계산하기
+    func getDistance(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) -> CLLocationDistance {
+            let from = CLLocation(latitude: from.latitude, longitude: from.longitude)
+            let to = CLLocation(latitude: to.latitude, longitude: to.longitude)
+            return from.distance(from: to)
+    }
+
 }
 
 
