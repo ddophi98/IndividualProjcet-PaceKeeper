@@ -52,8 +52,6 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
                     self.data.currentSpeed = 0.0
                 }
             }
-            
-            
         }
     }
     
@@ -87,7 +85,6 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
             let to = CLLocation(latitude: to.latitude, longitude: to.longitude)
             return from.distance(from: to)
     }
-
 }
 
 

@@ -6,38 +6,35 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct ResultView: View {
-    let selectedSpeed: Float
-    let averageSpeed: Float
-    let totalTime: Int
-    let totalDistance: Float
-    let totalCalorie: Float
+    private let timerProcess: TimerProcess
     
-    init (selectedSpeed: Float, totalTime: Int, totalDistance: Float, totalCalorie: Float){
-        self.selectedSpeed = selectedSpeed
-        self.averageSpeed = 0
-        self.totalTime = totalTime
-        self.totalDistance = totalDistance
-        self.totalCalorie = totalCalorie
+    init (_ timerProcess: TimerProcess){
+        self.timerProcess = timerProcess
     }
     
     var body: some View {
         VStack{
             // 수치 정보 보여주기
-            makeTotalInfoView("제한 속도", String(selectedSpeed) + " km/h")
-            Divider().padding(.horizontal)
-            makeTotalInfoView("평균 속도", String(averageSpeed) + " km/h")
-            Divider().padding(.horizontal)
-            makeTotalInfoView("총 이동시간", String(totalTime))
-            Divider().padding(.horizontal)
-            makeTotalInfoView("총 이동거리", String(totalDistance) + " km")
-            Divider().padding(.horizontal)
-            makeTotalInfoView("총 칼로리", String(totalCalorie) + " kcal")
-            Divider().padding(.horizontal)
+            Group{
+                makeTotalInfoView("제한 속도", String(format: "%.1f", timerProcess.data.selectedSpeed) + " km/h")
+                Divider().padding(.horizontal)
+                makeTotalInfoView("평균 속도", String(format: "%.1f", 111) + " km/h")
+                Divider().padding(.horizontal)
+                makeTotalInfoView("총 이동시간", String(timerProcess.data.processedTime) + " s")
+                Divider().padding(.horizontal)
+                makeTotalInfoView("총 이동거리", String(format: "%.2f", timerProcess.data.movedDistance) + " km")
+                Divider().padding(.horizontal)
+                makeTotalInfoView("총 칼로리", String(format: "%.1f", timerProcess.data.consumedCalorie) + " kcal")
+                Divider().padding(.horizontal)
+            }
             // 시간에 따른 속도 그래프 보여주기
             
             // 지도에 이동경로 보여주기
+            makeMapView()
+            Spacer()
         }
     }
     
@@ -53,10 +50,21 @@ struct ResultView: View {
                 .font(.system(size: 20, weight: Font.Weight.bold))
         }.padding(.horizontal)
     }
+    
+    // MapView 띄우기
+    func makeMapView() -> some View{
+        // 맵에서 중심이 될 좌표
+        let mapCenter = timerProcess.data.coordinates[0]
+        // 지도의 범위
+        let mapSpan = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        // 보여줄 화면
+        let mapRegion = MKCoordinateRegion(center: mapCenter, span: mapSpan)
+        return MapView(region: mapRegion, lineCoordinates: timerProcess.data.coordinates)
+    }
 }
 
 struct ResultView_Previews: PreviewProvider {
     static var previews: some View {
-        ResultView(selectedSpeed: 6.5, totalTime: 3, totalDistance: 4, totalCalorie: 234.2)
+        ResultView(TimerProcess())
     }
 }

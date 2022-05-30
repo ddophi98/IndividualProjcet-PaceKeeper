@@ -25,6 +25,7 @@ struct MainView: View {
     @State var selectedNotiMethod: NotiMethod
     @State var currentState: CurrentState
     @State var showHelpPopup: Bool
+    @State var isLinkActive: Bool
     @ObservedObject var timerProcess: TimerProcess
     var speeds = [Float]()
     
@@ -34,6 +35,7 @@ struct MainView: View {
         currentState = CurrentState.BeforeStart
         timerProcess = TimerProcess()
         showHelpPopup = false
+        isLinkActive = false
         for speed in stride(from: 0, through: 20, by: 0.5) {
             speeds.append(Float(speed))
         }
@@ -66,10 +68,10 @@ struct MainView: View {
                     }
                     // 실시간 정보 보여주기
                     LazyVGrid(columns: [GridItem(.flexible(maximum: 120)), GridItem(.flexible(maximum: 120))]){
-                        makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed))
-                        makeRealTimeInfoView(title: "시간", content: "\(timerProcess.data.processedTime)")
-                        makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance))
-                        makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)")
+                        makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed) + " km/h")
+                        makeRealTimeInfoView(title: "시간", content: "\(timerProcess.data.processedTime)" + " s")
+                        makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance) + " km")
+                        makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)" + " kcal")
                     }.padding(20)
                     // 측정 시작 또는 중지 또는 결과보기
                     makeMainButtons()
@@ -125,6 +127,9 @@ struct MainView: View {
                 .background(Color.white)
                 .cornerRadius(30.0)
             }
+        }
+        .onChange(of: selectedSpeedIdx){ _ in
+            timerProcess.data.selectedSpeed = speeds[selectedSpeedIdx]
         }
     }
     
@@ -279,16 +284,18 @@ struct MainView: View {
                             .foregroundColor(Color(hex: "03045E"))
                             .cornerRadius(20)
                     }
-                    Button(action:{
-                        
-                    }){
-                        Text("결과 보기")
-                            .font(.system(size: 25, weight: Font.Weight.bold))
-                            .frame(width: 120)
-                            .padding()
-                            .background(Color(hex: "03045E"))
-                            .foregroundColor(Color(hex: "FFFFFF"))
-                            .cornerRadius(20)
+                    NavigationLink(destination: ResultView(timerProcess), isActive: $isLinkActive){
+                        Button(action:{
+                            isLinkActive = true
+                        }){
+                            Text("결과 보기")
+                                .font(.system(size: 25, weight: Font.Weight.bold))
+                                .frame(width: 120)
+                                .padding()
+                                .background(Color(hex: "03045E"))
+                                .foregroundColor(Color(hex: "FFFFFF"))
+                                .cornerRadius(20)
+                        }
                     }
                 }
             )

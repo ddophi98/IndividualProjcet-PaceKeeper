@@ -9,13 +9,15 @@ import Foundation
 import CoreLocation
 
 struct Data{
+    var selectedSpeed: Float
     var currentSpeed: Float
     var processedTime: Int
     var movedDistance: Float
     var consumedCalorie: Float
     var coordinates = [CLLocationCoordinate2D]()
     
-    init(currentSpeed: Float = 0.0, processedTime: Int = 0, movedDistance: Float = 0.0, consumedCalorie: Float = 0.0){
+    init(selectedSpeed: Float = 0.0, currentSpeed: Float = 0.0, processedTime: Int = 0, movedDistance: Float = 0.0, consumedCalorie: Float = 0.0){
+        self.selectedSpeed = selectedSpeed
         self.currentSpeed = currentSpeed
         self.processedTime = processedTime
         self.movedDistance = movedDistance

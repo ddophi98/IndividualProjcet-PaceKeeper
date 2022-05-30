@@ -22,6 +22,7 @@
 		BC9E3FFD283DA85800AC5E77 /* TimerProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E3FFC283DA85800AC5E77 /* TimerProcess.swift */; };
 		BC9E4001283DCDB100AC5E77 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E4000283DCDB100AC5E77 /* Data.swift */; };
 		BC9E4003283F8FC900AC5E77 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E4002283F8FC900AC5E77 /* Test.swift */; };
+		BC9E40082844F6FA00AC5E77 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E40072844F6FA00AC5E77 /* MapView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		BC9E4000283DCDB100AC5E77 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		BC9E4002283F8FC900AC5E77 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		BC9E40042842505100AC5E77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BC9E40072844F6FA00AC5E77 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				BC9E3FEF283AFB4800AC5E77 /* HapticManager.swift */,
 				BC9E3FF1283C550B00AC5E77 /* SoundManager.swift */,
 				BC9E3FFC283DA85800AC5E77 /* TimerProcess.swift */,
+				BC9E40072844F6FA00AC5E77 /* MapView.swift */,
 				BC9E4000283DCDB100AC5E77 /* Data.swift */,
 				BC50B1DC2834D695002E969E /* ColorExtension.swift */,
 				BC9E4002283F8FC900AC5E77 /* Test.swift */,
@@ -190,6 +193,7 @@
 				BC50B1CD283387B2002E969E /* ContentView.swift in Sources */,
 				BC50B1DB283388D8002E969E /* ResultView.swift in Sources */,
 				BC50B1D9283388C9002E969E /* MainView.swift in Sources */,
+				BC9E40082844F6FA00AC5E77 /* MapView.swift in Sources */,
 				BC50B1CB283387B2002E969E /* PaceKeeperApp.swift in Sources */,
 				BC9E3FF0283AFB4900AC5E77 /* HapticManager.swift in Sources */,
 				BC9E3FFD283DA85800AC5E77 /* TimerProcess.swift in Sources */,
