@@ -23,6 +23,8 @@
 		BC9E4001283DCDB100AC5E77 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E4000283DCDB100AC5E77 /* Data.swift */; };
 		BC9E4003283F8FC900AC5E77 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E4002283F8FC900AC5E77 /* Test.swift */; };
 		BC9E40082844F6FA00AC5E77 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E40072844F6FA00AC5E77 /* MapView.swift */; };
+		BC9E400B28458F8900AC5E77 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = BC9E400A28458F8900AC5E77 /* Charts */; };
+		BC9E400D2845900400AC5E77 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E400C2845900400AC5E77 /* ChartView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,7 @@
 		BC9E4002283F8FC900AC5E77 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		BC9E40042842505100AC5E77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BC9E40072844F6FA00AC5E77 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		BC9E400C2845900400AC5E77 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +54,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC50B1E328370F63002E969E /* PopupView in Frameworks */,
+				BC9E400B28458F8900AC5E77 /* Charts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +89,7 @@
 				BC9E3FEF283AFB4800AC5E77 /* HapticManager.swift */,
 				BC9E3FF1283C550B00AC5E77 /* SoundManager.swift */,
 				BC9E3FFC283DA85800AC5E77 /* TimerProcess.swift */,
+				BC9E400C2845900400AC5E77 /* ChartView.swift */,
 				BC9E40072844F6FA00AC5E77 /* MapView.swift */,
 				BC9E4000283DCDB100AC5E77 /* Data.swift */,
 				BC50B1DC2834D695002E969E /* ColorExtension.swift */,
@@ -130,6 +135,7 @@
 			name = PaceKeeper;
 			packageProductDependencies = (
 				BC50B1E228370F63002E969E /* PopupView */,
+				BC9E400A28458F8900AC5E77 /* Charts */,
 			);
 			productName = PaceKeeper;
 			productReference = BC50B1C7283387B2002E969E /* PaceKeeper.app */;
@@ -161,6 +167,7 @@
 			mainGroup = BC50B1BE283387B1002E969E;
 			packageReferences = (
 				BC50B1E128370F63002E969E /* XCRemoteSwiftPackageReference "PopupView" */,
+				BC9E400928458F8900AC5E77 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = BC50B1C8283387B2002E969E /* Products */;
 			projectDirPath = "";
@@ -201,6 +208,7 @@
 				BC9E4003283F8FC900AC5E77 /* Test.swift in Sources */,
 				BC9E4001283DCDB100AC5E77 /* Data.swift in Sources */,
 				BC50B1DD2834D695002E969E /* ColorExtension.swift in Sources */,
+				BC9E400D2845900400AC5E77 /* ChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,6 +423,14 @@
 				kind = branch;
 			};
 		};
+		BC9E400928458F8900AC5E77 /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -422,6 +438,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC50B1E128370F63002E969E /* XCRemoteSwiftPackageReference "PopupView" */;
 			productName = PopupView;
+		};
+		BC9E400A28458F8900AC5E77 /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC9E400928458F8900AC5E77 /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
