@@ -29,7 +29,7 @@ struct ChartView : UIViewRepresentable {
         chart.xAxis.drawAxisLineEnabled = false
         chart.xAxis.labelPosition = .bottom
         chart.rightAxis.enabled = false
-        chart.leftAxis.enabled = false
+        chart.leftAxis.enabled = true
         chart.drawBordersEnabled = false
         chart.legend.form = .none
         chart.xAxis.labelCount = 7
@@ -44,8 +44,9 @@ struct ChartView : UIViewRepresentable {
     // 데이터 추가하기
     func addData() -> LineChartData{
         let data = LineChartData(dataSets: [
-            generateLineChartDataSet(dataSetEntries: yVals, color: UIColor(Color(#colorLiteral(red: 0.6235294118, green: 0.7333333333, blue: 0.3568627451, alpha: 1))), fillColor: UIColor(Color(#colorLiteral(red: 0, green: 0.8134518862, blue: 0.9959517121, alpha: 1)))),
+            generateLineChartDataSet(dataSetEntries: yVals, color: UIColor(Color(hex: "0277B6")), fillColor: UIColor(Color(hex: "90E0EF"))),
         ])
+        data.setDrawValues(false)
         return data
     }
     
@@ -74,8 +75,11 @@ struct ChartView : UIViewRepresentable {
         }
         
         public func stringForValue(_ value: Double, axis: AxisBase?) -> String {
-            print(value)
-            return times[Int(value-1)]
+            if Int(value) == 0 {
+                return ""
+            } else {
+                return times[Int(value)]
+            }
         }
     }
 }

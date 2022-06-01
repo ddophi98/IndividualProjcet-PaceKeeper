@@ -27,7 +27,7 @@ struct MainView: View {
     @State var showHelpPopup: Bool
     @State var isLinkActive: Bool
     @ObservedObject var timerProcess: TimerProcess
-    var speeds = [Float]()
+    var speedList = [Float]()
     
     init(){
         selectedSpeedIdx = 0
@@ -37,7 +37,7 @@ struct MainView: View {
         showHelpPopup = false
         isLinkActive = false
         for speed in stride(from: 0, through: 20, by: 0.5) {
-            speeds.append(Float(speed))
+            speedList.append(Float(speed))
         }
         HapticManager.instance.prepareHaptics()
         timerProcess.setLocationManager()
@@ -129,7 +129,7 @@ struct MainView: View {
             }
         }
         .onChange(of: selectedSpeedIdx){ _ in
-            timerProcess.data.selectedSpeed = speeds[selectedSpeedIdx]
+            timerProcess.data.selectedSpeed = speedList[selectedSpeedIdx]
         }
     }
     
@@ -142,8 +142,8 @@ struct MainView: View {
                 HStack{
                     Text("km/h").opacity(0)
                     Picker("Limit Speed", selection: $selectedSpeedIdx) {
-                        ForEach(0..<speeds.count, id: \.self){ idx in
-                            Text(String(speeds[idx]))
+                        ForEach(0..<speedList.count, id: \.self){ idx in
+                            Text(String(speedList[idx]))
                                 .font(.system(size: 22, weight: Font.Weight.bold))
                         }
                     }
@@ -159,7 +159,7 @@ struct MainView: View {
             // 선택된 제한 속도 보여주기
             return AnyView(
                 HStack{
-                    Text(String(speeds[selectedSpeedIdx]))
+                    Text(String(speedList[selectedSpeedIdx]))
                         .font(.system(size: 45, weight: Font.Weight.bold))
                     Text("km/h")
                         .font(.system(size: 20, weight: Font.Weight.bold))

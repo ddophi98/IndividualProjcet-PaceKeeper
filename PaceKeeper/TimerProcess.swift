@@ -51,6 +51,7 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
                 }else{
                     self.data.currentSpeed = 0.0
                 }
+                self.data.speeds.append(self.data.currentSpeed)
             }
         }
     }

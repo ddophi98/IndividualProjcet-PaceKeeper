@@ -17,7 +17,7 @@ struct ResultView: View {
     }
     
     var body: some View {
-        ScrollView{
+        ScrollView(showsIndicators: false){
             VStack{
                 // 수치 정보 보여주기
                 Group{
@@ -34,11 +34,14 @@ struct ResultView: View {
                 }
                 // 시간에 따른 속도 그래프 보여주기
                 makeChartView()
+                    .padding(.top, 10)
+                Divider()
                 // 지도에 이동경로 보여주기
                 makeMapView()
+                    .padding(10)
                 Spacer()
             }
-        }.padding(.horizontal)
+        }.padding(.horizontal, 20)
         
     }
     
@@ -55,6 +58,23 @@ struct ResultView: View {
         }
     }
     
+    // ChartView 띄우기
+    func makeChartView() -> some View{
+        // 차트의 x, y값
+        var xVals = [String]()
+        var yVals = [ChartDataEntry]()
+        for i in 1...timerProcess.data.speeds.count {
+            xVals.append("\(i)초")
+            yVals.append(ChartDataEntry(x: Double(i), y: Double(timerProcess.data.speeds[i-1])))
+        }
+        return VStack(alignment: .leading){
+            Text("시간 별 속도")
+                .foregroundColor(Color(hex: "03045E"))
+                .font(.system(size: 20, weight: Font.Weight.bold))
+            ChartView(xVals: xVals, yVals: yVals).frame(height: 200)
+        }
+    }
+    
     // MapView 띄우기
     func makeMapView() -> some View{
         // 맵에서 중심이 될 좌표
@@ -63,25 +83,12 @@ struct ResultView: View {
         let mapSpan = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         // 보여줄 화면
         let mapRegion = MKCoordinateRegion(center: mapCenter, span: mapSpan)
-        return MapView(region: mapRegion, lineCoordinates: timerProcess.data.coordinates).frame(height: 200)
-    }
-    
-    // ChartView 띄우기
-    func makeChartView() -> some View{
-        // 차트의 x값
-        let xVals = ["a", "b", "c", "d", "e", "f", "g"]
-        // 차트의 y값
-        let yVals = [
-            ChartDataEntry(x: 1, y: 1),
-            ChartDataEntry(x: 2, y: 3),
-            ChartDataEntry(x: 3, y: 2),
-            ChartDataEntry(x: 4, y: 7),
-            ChartDataEntry(x: 5, y: 5),
-            ChartDataEntry(x: 6, y: 4),
-            ChartDataEntry(x: 7, y: 6)
-        ]
-        // 보여줄 화면
-        return ChartView(xVals: xVals, yVals: yVals).frame(height: 200)
+        return VStack(alignment: .leading){
+            Text("이동 경로")
+                .foregroundColor(Color(hex: "03045E"))
+                .font(.system(size: 20, weight: Font.Weight.bold))
+            MapView(region: mapRegion, lineCoordinates: timerProcess.data.coordinates).frame(height: 200)
+        }
     }
 }
 
