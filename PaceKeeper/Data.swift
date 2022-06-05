@@ -8,17 +8,23 @@
 import Foundation
 import CoreLocation
 
+enum NotiMethod{
+    case Sound, Vibration
+}
+
+enum ComparedState{
+    case Lower, Higher
+}
+
 struct Data{
-    var selectedSpeed: Float
     var currentSpeed: Float
     var processedTime: Int
     var movedDistance: Float
     var consumedCalorie: Float
     var coordinates = [CLLocationCoordinate2D]()
-    var speeds = [Float]()
+    var speeds: [Float] = [0.0]
     
-    init(selectedSpeed: Float = 0.0, currentSpeed: Float = 0.0, processedTime: Int = 0, movedDistance: Float = 0.0, consumedCalorie: Float = 0.0){
-        self.selectedSpeed = selectedSpeed
+    init(currentSpeed: Float = 0.0, processedTime: Int = 0, movedDistance: Float = 0.0, consumedCalorie: Float = 0.0){
         self.currentSpeed = currentSpeed
         self.processedTime = processedTime
         self.movedDistance = movedDistance

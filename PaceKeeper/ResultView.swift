@@ -11,9 +11,11 @@ import Charts
 
 struct ResultView: View {
     private let timerProcess: TimerProcess
+    private let selectedSpeed: Float
     
-    init (_ timerProcess: TimerProcess){
+    init (timerProcess: TimerProcess, selectedSpeed: Float){
         self.timerProcess = timerProcess
+        self.selectedSpeed = selectedSpeed
     }
     
     var body: some View {
@@ -21,7 +23,7 @@ struct ResultView: View {
             VStack{
                 // 수치 정보 보여주기
                 Group{
-                    makeTotalInfoView("제한 속도", String(format: "%.1f", timerProcess.data.selectedSpeed) + " km/h")
+                    makeTotalInfoView("제한 속도", String(format: "%.1f", selectedSpeed) + " km/h")
                     Divider()
                     makeTotalInfoView("평균 속도", String(format: "%.1f", 111) + " km/h")
                     Divider()
@@ -94,6 +96,6 @@ struct ResultView: View {
 
 struct ResultView_Previews: PreviewProvider {
     static var previews: some View {
-        ResultView(TimerProcess())
+        ResultView(timerProcess: TimerProcess(), selectedSpeed: 12.0)
     }
 }

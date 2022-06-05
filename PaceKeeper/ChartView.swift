@@ -78,7 +78,7 @@ struct ChartView : UIViewRepresentable {
             if Int(value) == 0 {
                 return ""
             } else {
-                return times[Int(value)]
+                return times[Int(value-1)]
             }
         }
     }

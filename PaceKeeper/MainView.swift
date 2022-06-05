@@ -8,14 +8,6 @@
 import SwiftUI
 import PopupView
 
-enum NotiMethod{
-    case Sound, Vibration
-}
-
-enum ComparedState{
-    case Lower, Higher
-}
-
 enum CurrentState{
     case BeforeStart, Processing, Stop, End
 }
@@ -31,7 +23,7 @@ struct MainView: View {
     
     init(){
         selectedSpeedIdx = 0
-        selectedNotiMethod = NotiMethod.Sound
+        selectedNotiMethod = .Sound
         currentState = CurrentState.BeforeStart
         timerProcess = TimerProcess()
         showHelpPopup = false
@@ -67,9 +59,9 @@ struct MainView: View {
                         .frame(width: 240)
                     }
                     // 실시간 정보 보여주기
-                    LazyVGrid(columns: [GridItem(.flexible(maximum: 120)), GridItem(.flexible(maximum: 120))]){
+                    LazyVGrid(columns: [GridItem(.flexible(maximum: 140)), GridItem(.flexible(maximum: 140))]){
                         makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed) + " km/h")
-                        makeRealTimeInfoView(title: "시간", content: "\(timerProcess.data.processedTime)" + " s")
+                        makeRealTimeInfoView(title: "경과 시간", content: "\(timerProcess.data.processedTime)" + " s")
                         makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance) + " km")
                         makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)" + " kcal")
                     }.padding(20)
@@ -128,9 +120,6 @@ struct MainView: View {
                 .cornerRadius(30.0)
             }
         }
-        .onChange(of: selectedSpeedIdx){ _ in
-            timerProcess.data.selectedSpeed = speedList[selectedSpeedIdx]
-        }
     }
     
     // 제한 속도 뷰를 상황에 따라 다르게 만들기
@@ -178,7 +167,7 @@ struct MainView: View {
     
     // 실시간 정보 뷰 만들기
     func makeRealTimeInfoView(title: String, content: String) -> some View {
-        return VStack{
+        return VStack(){
             Text(title)
                 .font(.system(size: 25, weight: Font.Weight.bold))
                 .foregroundColor(Color(hex: "03045E"))
@@ -196,7 +185,7 @@ struct MainView: View {
             return AnyView(
                 Button(action:{
                     timerProcess.initData()
-                    timerProcess.startProcess()
+                    timerProcess.startProcess(selectedSpeed: speedList[selectedSpeedIdx], selectedNotiMethod: selectedNotiMethod)
                     currentState = .Processing
                 }){
                     Text("측정 시작")
@@ -254,7 +243,7 @@ struct MainView: View {
                             .cornerRadius(20)
                     }
                     Button(action:{
-                        timerProcess.startProcess()
+                        timerProcess.startProcess(selectedSpeed: speedList[selectedSpeedIdx], selectedNotiMethod: selectedNotiMethod)
                         currentState = .Processing
                     }){
                         Text("계속")
@@ -273,7 +262,7 @@ struct MainView: View {
                 HStack(spacing:25){
                     Button(action:{
                         timerProcess.initData()
-                        timerProcess.startProcess()
+                        timerProcess.startProcess(selectedSpeed: speedList[selectedSpeedIdx], selectedNotiMethod: selectedNotiMethod)
                         currentState = .Processing
                     }){
                         Text("재시작")
@@ -284,7 +273,7 @@ struct MainView: View {
                             .foregroundColor(Color(hex: "03045E"))
                             .cornerRadius(20)
                     }
-                    NavigationLink(destination: ResultView(timerProcess), isActive: $isLinkActive){
+                    NavigationLink(destination: ResultView(timerProcess: timerProcess, selectedSpeed: speedList[selectedSpeedIdx]), isActive: $isLinkActive){
                         Button(action:{
                             isLinkActive = true
                         }){
@@ -307,9 +296,9 @@ struct MainView: View {
             Button(action:{
                 switch state {
                 case .Lower:
-                    notify(type: .Sound, state: .Lower)
+                    timerProcess.notify(type: .Sound, state: .Lower)
                 case .Higher:
-                    notify(type: .Sound, state: .Higher)
+                    timerProcess.notify(type: .Sound, state: .Higher)
                 }
             }){
                 Text("소리")
@@ -325,9 +314,9 @@ struct MainView: View {
             Button(action:{
                 switch state {
                 case .Lower:
-                    notify(type: .Vibration, state: .Lower)
+                    timerProcess.notify(type: .Vibration, state: .Lower)
                 case .Higher:
-                    notify(type: .Vibration, state: .Higher)
+                    timerProcess.notify(type: .Vibration, state: .Higher)
                 }
             }){
                 Text("진동")
@@ -337,26 +326,6 @@ struct MainView: View {
                     .background(Color(hex: "0277B6"))
                     .foregroundColor(Color(hex: "FFFFFF"))
                     .cornerRadius(20)
-            }
-        }
-    }
-    
-    // 알림음 또는 진동 들려주기
-    func notify(type: NotiMethod, state: ComparedState){
-        switch type {
-        case .Sound:
-            switch state {
-            case .Lower:
-                SoundManager.instance.playSound(.Lower)
-            case .Higher:
-                SoundManager.instance.playSound(.Higher)
-            }
-        case .Vibration:
-            switch state {
-            case .Lower:
-                HapticManager.instance.vibrate(.Lower)
-            case .Higher:
-                HapticManager.instance.vibrate(.Higher)
             }
         }
     }

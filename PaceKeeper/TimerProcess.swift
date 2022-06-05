@@ -22,12 +22,12 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     }
     
     // 프로세스 시작하기
-    func startProcess(){
+    func startProcess(selectedSpeed: Float, selectedNotiMethod: NotiMethod){
         // 일정시간 단위로 반복되는 작업
         timer = Timer.scheduledTimer(withTimeInterval: updatingTime, repeats: true){ timer in
             // 시간 증가시키기
             self.data.processedTime += 1
-            // 현재 위치 업데이트 하기
+            // 현재 좌표 업데이트 하기
             self.updateLocation()
             guard let latitude = self.latitude,
                   let longitude = self.longitude
@@ -35,23 +35,14 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
                 print("위치 정보 못받아옴")
                 return
             }
-            
-            // 좌표 추가하기
-            if self.data.coordinates.count == 0{
-                self.data.coordinates.append(CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
-            }else{
-                let lastCoordinate = self.data.coordinates[self.data.coordinates.endIndex-1]
-                // 움직인 거리 및 속도 업데이트하기
-                if lastCoordinate.latitude != latitude || lastCoordinate.longitude != longitude{
-                    let currentCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                    let currentMovedDistance = Float(self.getDistance(from: lastCoordinate, to: currentCoordinate))/1000
-                    self.data.coordinates.append(currentCoordinate)
-                    self.data.movedDistance += currentMovedDistance
-                    self.data.currentSpeed = currentMovedDistance / (Float(self.updatingTime) / 3600)
-                }else{
-                    self.data.currentSpeed = 0.0
-                }
-                self.data.speeds.append(self.data.currentSpeed)
+            // 위치 추가하기
+            let currentCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            self.data.coordinates.append(currentCoordinate)
+            // 움직인 거리 및 속도 업데이트하기
+            if self.data.coordinates.count >= 2{
+                let lastCoordinate = self.data.coordinates[self.data.coordinates.endIndex-2]
+                self.updateValue(currentCoordinate: currentCoordinate, lastCoordinate: lastCoordinate)
+                self.notifyBySpeed(lastSpeed: self.data.speeds[self.data.speeds.endIndex-2], currentSpeed: self.data.currentSpeed, limitSpeed: selectedSpeed, notiMethod: selectedNotiMethod)
             }
         }
     }
@@ -85,6 +76,52 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
             let from = CLLocation(latitude: from.latitude, longitude: from.longitude)
             let to = CLLocation(latitude: to.latitude, longitude: to.longitude)
             return from.distance(from: to)
+    }
+    
+    // 움직인 거리 및 속도 업데이트하기
+    func updateValue(currentCoordinate: CLLocationCoordinate2D, lastCoordinate: CLLocationCoordinate2D){
+        if lastCoordinate.latitude != currentCoordinate.latitude || lastCoordinate.longitude != currentCoordinate.longitude{
+            let currentMovedDistance = Float(self.getDistance(from: lastCoordinate, to: currentCoordinate))/1000
+            self.data.movedDistance += currentMovedDistance
+            self.data.currentSpeed = currentMovedDistance / (Float(self.updatingTime) / 3600)
+        }else{
+            self.data.currentSpeed = 0.0
+        }
+        self.data.speeds.append(self.data.currentSpeed)
+    }
+    
+    // 속도에 따라 알림 주기
+    func notifyBySpeed(lastSpeed: Float, currentSpeed: Float, limitSpeed: Float, notiMethod: NotiMethod){
+        // 현재속도가 재한속도를 넘어갔을때
+        if lastSpeed < limitSpeed && limitSpeed < currentSpeed {
+            notify(type: notiMethod, state: .Higher)
+            print("higher notify")
+        }
+        // 현재속도가 제한속도보다 떨어졌을때
+        else if currentSpeed < limitSpeed && limitSpeed < lastSpeed {
+            notify(type: notiMethod, state: .Lower)
+            print("lower notify")
+        }
+    }
+    
+    // 알림음 또는 진동 들려주기
+    func notify(type: NotiMethod, state: ComparedState){
+        switch type {
+        case .Sound:
+            switch state {
+            case .Lower:
+                SoundManager.instance.playSound(.Lower)
+            case .Higher:
+                SoundManager.instance.playSound(.Higher)
+            }
+        case .Vibration:
+            switch state {
+            case .Lower:
+                HapticManager.instance.vibrate(.Lower)
+            case .Higher:
+                HapticManager.instance.vibrate(.Higher)
+            }
+        }
     }
 }
 
