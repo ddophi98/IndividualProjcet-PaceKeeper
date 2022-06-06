@@ -16,7 +16,7 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     private var longitude: Double?
     private let updatingTime = 1.0
     private var speedInitCount = 3
-    private var timerRepeatCount = 0
+    private var timerCountFromResume = 0
     
     // 데이터 초기화하기
     func initData(){
@@ -27,7 +27,7 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     func startProcess(selectedSpeed: Float, selectedNotiMethod: NotiMethod){
         // 일정시간 단위로 반복되는 작업
         timer = Timer.scheduledTimer(withTimeInterval: updatingTime, repeats: true){ timer in
-            self.timerRepeatCount += 1
+            self.timerCountFromResume += 1
             // 시간(초) 증가시키기
             self.data.processedTime += 1
             // 현재 좌표 업데이트 하기
@@ -41,7 +41,7 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
             // 위치 추가하기
             let currentCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             self.data.coordinates.append(currentCoordinate)
-            if self.data.coordinates.count >= 2{
+            if self.timerCountFromResume >= 2{
                 // 움직인 거리 및 속도 업데이트하기
                 let lastCoordinate = self.data.coordinates[self.data.coordinates.endIndex-2]
                 self.updateValue(currentCoordinate: currentCoordinate, lastCoordinate: lastCoordinate)
@@ -54,6 +54,7 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     // 프로세스 멈추기
     func stopProcess(){
         timer.invalidate()
+        timerCountFromResume = 0
     }
     
     // LocationManger 초기 설정하기
