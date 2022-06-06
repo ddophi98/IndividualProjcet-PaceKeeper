@@ -192,7 +192,7 @@ struct MainView: View {
                         .font(.system(size: 25, weight: Font.Weight.bold))
                         .frame(width: 120)
                         .padding()
-                        .background(Color(hex: "90E0EF"))
+                        .background(Color(hex: "C9F0F8"))
                         .foregroundColor(Color(hex: "03045E"))
                         .cornerRadius(20)
                 }
@@ -203,9 +203,9 @@ struct MainView: View {
                 HStack(spacing:25){
                     Button(action:{
                         timerProcess.stopProcess()
-                        currentState = .End
+                        currentState = .Stop
                     }){
-                        Text("종료")
+                        Text("일시 정지")
                             .font(.system(size: 25, weight: Font.Weight.bold))
                             .frame(width: 120)
                             .padding()
@@ -215,9 +215,9 @@ struct MainView: View {
                     }
                     Button(action:{
                         timerProcess.stopProcess()
-                        currentState = .Stop
+                        currentState = .End
                     }){
-                        Text("일시 정지")
+                        Text("종료")
                             .font(.system(size: 25, weight: Font.Weight.bold))
                             .frame(width: 120)
                             .padding()
@@ -232,17 +232,6 @@ struct MainView: View {
             return AnyView(
                 HStack(spacing:25){
                     Button(action:{
-                        currentState = .End
-                    }){
-                        Text("종료")
-                            .font(.system(size: 25, weight: Font.Weight.bold))
-                            .frame(width: 120)
-                            .padding()
-                            .background(Color(hex: "EEEEEF"))
-                            .foregroundColor(Color(hex: "000000"))
-                            .cornerRadius(20)
-                    }
-                    Button(action:{
                         timerProcess.startProcess(selectedSpeed: speedList[selectedSpeedIdx], selectedNotiMethod: selectedNotiMethod)
                         currentState = .Processing
                     }){
@@ -250,8 +239,19 @@ struct MainView: View {
                             .font(.system(size: 25, weight: Font.Weight.bold))
                             .frame(width: 120)
                             .padding()
-                            .background(Color(hex: "90E0EF"))
+                            .background(Color(hex: "C9F0F8"))
                             .foregroundColor(Color(hex: "03045E"))
+                            .cornerRadius(20)
+                    }
+                    Button(action:{
+                        currentState = .End
+                    }){
+                        Text("종료")
+                            .font(.system(size: 25, weight: Font.Weight.bold))
+                            .frame(width: 120)
+                            .padding()
+                            .background(Color(hex: "FF5C5C"))
+                            .foregroundColor(Color(hex: "FFFFFF"))
                             .cornerRadius(20)
                     }
                 }
@@ -269,7 +269,7 @@ struct MainView: View {
                             .font(.system(size: 25, weight: Font.Weight.bold))
                             .frame(width: 120)
                             .padding()
-                            .background(Color(hex: "90E0EF"))
+                            .background(Color(hex: "C9F0F8"))
                             .foregroundColor(Color(hex: "03045E"))
                             .cornerRadius(20)
                     }

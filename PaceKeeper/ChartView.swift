@@ -79,7 +79,7 @@ struct ChartView : UIViewRepresentable {
         }
         
         public func stringForValue(_ value: Double, axis: AxisBase?) -> String {
-            if Int(value-1) <= -1 || Int(value) >= times.count {
+            if Int(value-1) <= -1 || Int(value) > times.count {
                 return ""
             } else {
                 return times[Int(value-1)]
