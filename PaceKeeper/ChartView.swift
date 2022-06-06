@@ -32,7 +32,11 @@ struct ChartView : UIViewRepresentable {
         chart.leftAxis.enabled = true
         chart.drawBordersEnabled = false
         chart.legend.form = .none
-        chart.xAxis.labelCount = 7
+        if yVals.count < 7{
+            chart.xAxis.labelCount = yVals.count
+        }else{
+            chart.xAxis.labelCount = 7
+        }
         chart.xAxis.forceLabelsEnabled = true
         chart.xAxis.granularityEnabled = true
         chart.xAxis.granularity = 1
@@ -75,7 +79,7 @@ struct ChartView : UIViewRepresentable {
         }
         
         public func stringForValue(_ value: Double, axis: AxisBase?) -> String {
-            if Int(value) == 0 {
+            if Int(value-1) <= -1 || Int(value) >= times.count {
                 return ""
             } else {
                 return times[Int(value-1)]

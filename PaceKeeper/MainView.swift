@@ -275,6 +275,7 @@ struct MainView: View {
                     }
                     NavigationLink(destination: ResultView(timerProcess: timerProcess, selectedSpeed: speedList[selectedSpeedIdx]), isActive: $isLinkActive){
                         Button(action:{
+                            self.timerProcess.data.speeds.remove(at: 0)
                             isLinkActive = true
                         }){
                             Text("결과 보기")

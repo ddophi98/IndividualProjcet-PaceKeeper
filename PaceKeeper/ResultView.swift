@@ -12,10 +12,16 @@ import Charts
 struct ResultView: View {
     private let timerProcess: TimerProcess
     private let selectedSpeed: Float
+    private let averageSpeed: Float
     
     init (timerProcess: TimerProcess, selectedSpeed: Float){
         self.timerProcess = timerProcess
         self.selectedSpeed = selectedSpeed
+        if timerProcess.data.speeds.count == 0{
+            self.averageSpeed = 0.0
+        }else{
+            self.averageSpeed = timerProcess.data.speeds.reduce(0, +) / Float(timerProcess.data.speeds.count)
+        }
     }
     
     var body: some View {
@@ -25,7 +31,7 @@ struct ResultView: View {
                 Group{
                     makeTotalInfoView("제한 속도", String(format: "%.1f", selectedSpeed) + " km/h")
                     Divider()
-                    makeTotalInfoView("평균 속도", String(format: "%.1f", 111) + " km/h")
+                    makeTotalInfoView("평균 속도", String(format: "%.1f", averageSpeed) + " km/h")
                     Divider()
                     makeTotalInfoView("총 이동시간", String(timerProcess.data.processedTime) + " s")
                     Divider()
@@ -65,9 +71,14 @@ struct ResultView: View {
         // 차트의 x, y값
         var xVals = [String]()
         var yVals = [ChartDataEntry]()
-        for i in 1...timerProcess.data.speeds.count {
-            xVals.append("\(i)초")
-            yVals.append(ChartDataEntry(x: Double(i), y: Double(timerProcess.data.speeds[i-1])))
+        if timerProcess.data.speeds.count >= 1{
+            for i in 1...timerProcess.data.speeds.count {
+                xVals.append("\(i)초")
+                yVals.append(ChartDataEntry(x: Double(i), y: Double(timerProcess.data.speeds[i-1])))
+            }
+        } else{
+            xVals.append("0초")
+            yVals.append(ChartDataEntry(x: Double(0), y: Double(0.0)))
         }
         return VStack(alignment: .leading){
             Text("시간 별 속도")

@@ -15,6 +15,8 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     private var latitude: Double?
     private var longitude: Double?
     private let updatingTime = 1.0
+    private var speedInitCount = 3
+    private var timerRepeatCount = 0
     
     // 데이터 초기화하기
     func initData(){
@@ -25,7 +27,8 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     func startProcess(selectedSpeed: Float, selectedNotiMethod: NotiMethod){
         // 일정시간 단위로 반복되는 작업
         timer = Timer.scheduledTimer(withTimeInterval: updatingTime, repeats: true){ timer in
-            // 시간 증가시키기
+            self.timerRepeatCount += 1
+            // 시간(초) 증가시키기
             self.data.processedTime += 1
             // 현재 좌표 업데이트 하기
             self.updateLocation()
@@ -38,10 +41,11 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
             // 위치 추가하기
             let currentCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             self.data.coordinates.append(currentCoordinate)
-            // 움직인 거리 및 속도 업데이트하기
             if self.data.coordinates.count >= 2{
+                // 움직인 거리 및 속도 업데이트하기
                 let lastCoordinate = self.data.coordinates[self.data.coordinates.endIndex-2]
                 self.updateValue(currentCoordinate: currentCoordinate, lastCoordinate: lastCoordinate)
+                // 속도 변화에 따라 알림 보내기
                 self.notifyBySpeed(lastSpeed: self.data.speeds[self.data.speeds.endIndex-2], currentSpeed: self.data.currentSpeed, limitSpeed: selectedSpeed, notiMethod: selectedNotiMethod)
             }
         }
@@ -81,11 +85,17 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
     // 움직인 거리 및 속도 업데이트하기
     func updateValue(currentCoordinate: CLLocationCoordinate2D, lastCoordinate: CLLocationCoordinate2D){
         if lastCoordinate.latitude != currentCoordinate.latitude || lastCoordinate.longitude != currentCoordinate.longitude{
+            speedInitCount = 3
             let currentMovedDistance = Float(self.getDistance(from: lastCoordinate, to: currentCoordinate))/1000
             self.data.movedDistance += currentMovedDistance
             self.data.currentSpeed = currentMovedDistance / (Float(self.updatingTime) / 3600)
         }else{
-            self.data.currentSpeed = 0.0
+            speedInitCount -= 1
+            if speedInitCount == 0{
+                self.data.currentSpeed = 0
+            }else{
+                self.data.currentSpeed /= 2
+            }
         }
         self.data.speeds.append(self.data.currentSpeed)
     }
