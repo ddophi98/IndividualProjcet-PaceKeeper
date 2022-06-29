@@ -8,8 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    let isLaunchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
     var body: some View {
-        MainView()
+        NavigationView {
+            if !isLaunchedBefore {
+                InitView()
+            } else {
+                MainView()
+            }
+        }
     }
 }
 

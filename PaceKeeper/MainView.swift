@@ -36,90 +36,93 @@ struct MainView: View {
     }
     
     var body: some View {
-        NavigationView{
-            ZStack{
-                VStack(spacing: 40){
-                    // 제한 속도 선택 또는 보여주기
-                    VStack{
-                        Text("제한 속도")
-                            .font(.system(size: 30, weight: Font.Weight.bold))
-                            .foregroundColor(Color(hex: "03045E"))
-                        makeLimitSpeedView()
-                    }
-                    // 알림 방식 선택하기
-                    VStack{
-                        Text("알림 방식")
-                            .font(.system(size: 30, weight: Font.Weight.bold))
-                            .foregroundColor(Color(hex: "03045E"))
-                        Picker("Notice Method", selection: $selectedNotiMethod) {
-                            Text("소리").tag(NotiMethod.Sound)
-                            Text("진동").tag(NotiMethod.Vibration)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 240)
-                    }
-                    // 실시간 정보 보여주기
-                    LazyVGrid(columns: [GridItem(.flexible(maximum: 140)), GridItem(.flexible(maximum: 140))]){
-                        makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed) + " km/h")
-                        makeRealTimeInfoView(title: "경과 시간", content: "\(timerProcess.data.processedTime)" + " s")
-                        makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance) + " km")
-                        makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)" + " kcal")
-                    }.padding(20)
-                    // 측정 시작 또는 중지 또는 결과보기
-                    makeMainButtons()
-                    Spacer()
+        
+        ZStack{
+            VStack(spacing: 40){
+                // 제한 속도 선택 또는 보여주기
+                VStack{
+                    Text("제한 속도")
+                        .font(.system(size: 30, weight: Font.Weight.bold))
+                        .foregroundColor(Color(hex: "03045E"))
+                    makeLimitSpeedView()
                 }
-                .disabled(showHelpPopup ? true : false)
-                Color.black
-                    .edgesIgnoringSafeArea(.all)
-                    .opacity(showHelpPopup ? 0.3 : 0)
+                // 알림 방식 선택하기
+                VStack{
+                    Text("알림 방식")
+                        .font(.system(size: 30, weight: Font.Weight.bold))
+                        .foregroundColor(Color(hex: "03045E"))
+                    Picker("Notice Method", selection: $selectedNotiMethod) {
+                        Text("소리").tag(NotiMethod.Sound)
+                        Text("진동").tag(NotiMethod.Vibration)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 240)
+                }
+                // 실시간 정보 보여주기
+                LazyVGrid(columns: [GridItem(.flexible(maximum: 140)), GridItem(.flexible(maximum: 140))]){
+                    makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed) + " km/h")
+                    makeRealTimeInfoView(title: "경과 시간", content: "\(timerProcess.data.processedTime)" + " s")
+                    makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance) + " km")
+                    makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)" + " kcal")
+                }.padding(20)
+                // 측정 시작 또는 중지 또는 결과보기
+                makeMainButtons()
+                Spacer()
             }
-            .toolbar{
-                if currentState != .Processing {
-                    // 앱의 간단한 설명 팝업 창으로 보여주기
-                    Button(action:{
-                        withAnimation{
-                            showHelpPopup = true
-                        }
-                    }){
-                        Image(systemName: "questionmark.circle.fill")
-                            .foregroundColor(Color(hex: "03045E"))
-                            .font(.system(size: 20))
+            .disabled(showHelpPopup ? true : false)
+            Color.black
+                .edgesIgnoringSafeArea(.all)
+                .opacity(showHelpPopup ? 0.3 : 0)
+        }
+        .toolbar{
+            if currentState != .Processing {
+                // 앱의 간단한 설명 팝업 창으로 보여주기
+                Button(action:{
+                    withAnimation{
+                        showHelpPopup = true
                     }
+                }){
+                    Image(systemName: "questionmark.circle.fill")
+                        .foregroundColor(Color(hex: "03045E"))
+                        .font(.system(size: 20))
                 }
-            }
-            .popup(isPresented: $showHelpPopup, closeOnTap: false){
-                // 팝업 창
-                VStack(spacing: 30){
-                    VStack{
-                        Text("현재 속도가 제한 속도보다 높아지면 해당 알림으로 알려줍니다.")
-                        makeNotifyExampleView(state: .Higher)
-                    }
-                    .padding([.horizontal, .top])
-                    VStack{
-                        Text("현재 속도가 제한 속도보다 낮아지면 해당 알림으로 알려줍니다.")
-                        makeNotifyExampleView(state: .Lower)
-                    }
-                    .padding(.horizontal)
-                    Button(action:{
-                        withAnimation{
-                            showHelpPopup = false
-                        }
-                    }){
-                        Text("확인")
-                            .font(.system(size: 20, weight: Font.Weight.bold))
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .overlay(Rectangle().frame(height: 0.2, alignment: .top).foregroundColor(Color.gray), alignment: .top)
-                            .foregroundColor(Color.blue)
-                    }
-                    
-                }
-                .frame(width: 300, height: 350, alignment: .bottom)
-                .background(Color.white)
-                .cornerRadius(30.0)
             }
         }
+        .popup(isPresented: $showHelpPopup, closeOnTap: false){
+            // 팝업 창
+            VStack(spacing: 30){
+                VStack{
+                    Text("현재 속도가 제한 속도보다 높아지면 해당 알림으로 알려줍니다.")
+                    makeNotifyExampleView(state: .Higher)
+                }
+                .padding([.horizontal, .top])
+                VStack{
+                    Text("현재 속도가 제한 속도보다 낮아지면 해당 알림으로 알려줍니다.")
+                    makeNotifyExampleView(state: .Lower)
+                }
+                .padding(.horizontal)
+                Button(action:{
+                    withAnimation{
+                        showHelpPopup = false
+                    }
+                }){
+                    Text("확인")
+                        .font(.system(size: 20, weight: Font.Weight.bold))
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .overlay(Rectangle().frame(height: 0.2, alignment: .top).foregroundColor(Color.gray), alignment: .top)
+                        .foregroundColor(Color.blue)
+                }
+                
+            }
+            .frame(width: 300, height: 350, alignment: .bottom)
+            .background(Color.white)
+            .cornerRadius(30.0)
+        }
+        .onAppear {
+            print("몸무게: \(UserDefaults.standard.integer(forKey: "weight"))")
+        }
+        
     }
     
     // 제한 속도 뷰를 상황에 따라 다르게 만들기
@@ -153,14 +156,14 @@ struct MainView: View {
                     Text("km/h")
                         .font(.system(size: 20, weight: Font.Weight.bold))
                 }
-                .foregroundColor(Color(hex: "03045E"))
-                .overlay{
-                    Circle()
-                        .stroke(lineWidth: 10)
-                        .foregroundColor(Color(hex: "0277B6"))
-                        .frame(width: 180, height: 180)
-                }
-                .frame(height: 180)
+                    .foregroundColor(Color(hex: "03045E"))
+                    .overlay{
+                        Circle()
+                            .stroke(lineWidth: 10)
+                            .foregroundColor(Color(hex: "0277B6"))
+                            .frame(width: 180, height: 180)
+                    }
+                    .frame(height: 180)
             )
         }
     }
