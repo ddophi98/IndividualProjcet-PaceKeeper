@@ -30,6 +30,8 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
             self.timerCountFromResume += 1
             // 시간(초) 증가시키기
             self.data.processedTime += 1
+            // 칼로리 계산하기
+            self.data.consumedCalorie = self.calculateCalorie()
             // 현재 좌표 업데이트 하기
             self.updateLocation()
             guard let latitude = self.latitude,
@@ -133,6 +135,15 @@ class TimerProcess: UIViewController, ObservableObject, CLLocationManagerDelegat
                 HapticManager.instance.vibrate(.Higher)
             }
         }
+    }
+    
+    // 칼로리 계산하기
+    func calculateCalorie() -> Float {
+        // 조깅 기준
+        let metPerMinute: Float = 7.0
+        let met: Float = 3.5 * Float(UserDefaults.standard.integer(forKey: "weight")) / 60
+        let kcal: Float = metPerMinute * met * Float(self.data.processedTime) * 5 / 1000
+        return kcal
     }
 }
 

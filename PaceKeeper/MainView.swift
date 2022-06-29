@@ -63,7 +63,7 @@ struct MainView: View {
                     makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed) + " km/h")
                     makeRealTimeInfoView(title: "경과 시간", content: "\(timerProcess.data.processedTime)" + " s")
                     makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance) + " km")
-                    makeRealTimeInfoView(title: "칼로리", content: "\(timerProcess.data.consumedCalorie)" + " kcal")
+                    makeRealTimeInfoView(title: "칼로리", content: String(format: "%.2f", timerProcess.data.consumedCalorie) + " kcal")
                 }.padding(20)
                 // 측정 시작 또는 중지 또는 결과보기
                 makeMainButtons()
