@@ -61,9 +61,9 @@ struct MainView: View {
                 // 실시간 정보 보여주기
                 LazyVGrid(columns: [GridItem(.flexible(maximum: 140)), GridItem(.flexible(maximum: 140))]){
                     makeRealTimeInfoView(title: "현재 속도", content: String(format: "%.1f", timerProcess.data.currentSpeed) + " km/h")
-                    makeRealTimeInfoView(title: "경과 시간", content: "\(timerProcess.data.processedTime)" + " s")
+                    makeRealTimeInfoView(title: "경과 시간", content: changeTimeExpression(sec: timerProcess.data.processedTime))
                     makeRealTimeInfoView(title: "이동 거리", content: String(format: "%.2f", timerProcess.data.movedDistance) + " km")
-                    makeRealTimeInfoView(title: "칼로리", content: String(format: "%.2f", timerProcess.data.consumedCalorie) + " kcal")
+                    makeRealTimeInfoView(title: "칼로리", content: String(format: "%.1f", timerProcess.data.consumedCalorie) + " kcal")
                 }.padding(20)
                 // 측정 시작 또는 중지 또는 결과보기
                 makeMainButtons()
@@ -331,6 +331,17 @@ struct MainView: View {
                     .foregroundColor(Color(hex: "FFFFFF"))
                     .cornerRadius(20)
             }
+        }
+    }
+    
+    // 시간 표현 형식 바꾸기
+    func changeTimeExpression(sec: Int) -> String{
+        if sec >= 60 {
+            let min = sec / 60
+            let remainedSec = sec % 60
+            return "\(min) m \(remainedSec) s"
+        } else {
+            return "\(sec)" + " s"
         }
     }
 }

@@ -15,7 +15,7 @@ struct InitView: View {
     
     init() {
         UITextView.appearance().backgroundColor = .clear
-        UserDefaults.standard.set(true, forKey: "launchedBefore")
+        UserDefaults.standard.set(true, forKey: "launchedBefore2")
     }
     
     var body: some View {

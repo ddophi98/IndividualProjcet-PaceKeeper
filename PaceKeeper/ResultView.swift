@@ -33,7 +33,7 @@ struct ResultView: View {
                     Divider()
                     makeTotalInfoView("평균 속도", String(format: "%.1f", averageSpeed) + " km/h")
                     Divider()
-                    makeTotalInfoView("총 이동시간", String(timerProcess.data.processedTime) + " s")
+                    makeTotalInfoView("총 이동시간", changeTimeExpression(sec: timerProcess.data.processedTime))
                     Divider()
                     makeTotalInfoView("총 이동거리", String(format: "%.2f", timerProcess.data.movedDistance) + " km")
                     Divider()
@@ -101,6 +101,17 @@ struct ResultView: View {
                 .foregroundColor(Color(hex: "03045E"))
                 .font(.system(size: 20, weight: Font.Weight.bold))
             MapView(region: mapRegion, lineCoordinates: timerProcess.data.coordinates).frame(height: 200)
+        }
+    }
+    
+    // 시간 표현 형식 바꾸기
+    func changeTimeExpression(sec: Int) -> String{
+        if sec >= 60 {
+            let min = sec / 60
+            let remainedSec = sec % 60
+            return "\(min) m \(remainedSec) s"
+        } else {
+            return "\(sec)" + " s"
         }
     }
 }
